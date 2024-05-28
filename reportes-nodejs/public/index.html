@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Reporte</title>
+</head>
+<body>
+    <h1>Generar Reporte PDF</h1>
+    <button id="generateReportButton">Generar reporte</button>
+
+    <script>
+        document.getElementById('generateReportButton').addEventListener('click', () => {
+            fetch('/generate-report')
+                .then(response => {
+                    if (response.ok) {
+                        return response.blob();
+                    }
+                    throw new Error('Error al generar el reporte');
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'reporte.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Hubo un error al generar el reporte.');
+                });
+        });
+    </script>
+</body>
+</html>
